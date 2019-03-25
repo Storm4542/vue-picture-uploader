@@ -2,7 +2,7 @@
 
 ### 开始
 
-`vue-lnsoft-uploader`是针对移动端图片上传、剪裁、压缩功能开发的。
+`vue-picture-uploader`是针对移动端图片上传、剪裁、压缩功能开发的。
 
 ### 依赖
 
@@ -13,19 +13,19 @@
 ### 安装 
 
 ```
-yarn add vue-lnsoft-uploader
+yarn add vue-picture-uploader
 ```
 
 or
 
 ```
-npm install vue-lnsoft-uploader
+npm install vue-picture-uploader
 ```
 
 ### 使用
 
 ```javascript
-import uploader from 'vue-lnsoft-uploader'
+import uploader from 'vue-picture-uploader'
 Vue.use(uploader)
 ```
 

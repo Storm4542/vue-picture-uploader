@@ -1,6 +1,6 @@
 文档&&示例地址
 
- <https://storm4542.github.io/vue-lnsoft-uploader/>
+ <https://storm4542.github.io/vue-picture-uploader/>
 
 ### 示例
 

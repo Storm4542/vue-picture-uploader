@@ -1,24 +1,24 @@
 {
-  "name": "vue-lnsoft-uploader",
-  "version": "0.1.5",
+  "name": "vue-picture-uploader",
+  "version": "0.2.1",
   "private": false,
-  "main": "lib/vue-lnsoft-uploader.umd.min.js",
+  "main": "lib/vue-picture-uploader.umd.min.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Storm4542/vue-lnsoft-uploader.git"
+    "url": "git@github.com:Storm4542/vue-picture-uploader.git"
   },
   "bugs": {
-    "url": "https://github.com/Storm4542/vue-lnsoft-uploader/issues"
+    "url": "https://github.com/Storm4542/vue-picture-uploader/issues"
   },
-  "homepage": " https://storm4542.github.io/vue-lnsoft-uploader/",
+  "homepage": " https://storm4542.github.io/vue-picture-uploader/",
   "keywords": [
     "vuploadser",
     "vue-uploader",
-    "lnsoft"
+    "picture"
   ],
   "license": "MIT",
   "scripts": {
-    "lib": "vue-cli-service build --target lib --name vue-lnsoft-uploader --dest lib packages/index.js",
+    "lib": "vue-cli-service build --target lib --name vue-picture-uploader --dest lib packages/index.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "docs:dev": "vuepress dev docs",
