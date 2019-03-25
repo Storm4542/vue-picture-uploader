@@ -36,13 +36,13 @@
 
 <script>
     import GIcon from './icon';
-    import alloycrop from '../../plugins/AlloyCrop';
+    import alloycrop from '../../packages/uploader/src/AlloyCrop';
     // import imageCompress from '../../plugins/imageCompression';
     import lrz from 'lrz';
     import axios from 'axios';
 
     export default {
-        name: "g-uploader",
+        name: "uploader",
         components: {GIcon,},
         props: {
             imageCut: {

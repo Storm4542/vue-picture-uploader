@@ -1,12 +1,37 @@
 {
-  "name": "vue-uploader",
-  "version": "0.1.0",
-  "private": true,
+  "name": "vue-lnsoft-uploader",
+  "version": "0.1.5",
+  "private": false,
+  "main": "lib/vue-lnsoft-uploader.umd.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Storm4542/vue-lnsoft-uploader.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Storm4542/vue-lnsoft-uploader/issues"
+  },
+  "homepage": " https://storm4542.github.io/vue-lnsoft-uploader/",
+  "keywords": [
+    "vuploadser",
+    "vue-uploader",
+    "lnsoft"
+  ],
+  "license": "MIT",
   "scripts": {
+    "lib": "vue-cli-service build --target lib --name vue-lnsoft-uploader --dest lib packages/index.js",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "docs:dev": "vuepress dev docs",
+    "docs:build": "vuepress build docs"
   },
   "dependencies": {
+    "@vue/babel-preset-app": "^3.0.0",
+    "alloyfinger": "^0.1.16",
+    "autoprefixer": "^9.5.0",
+    "axios": "^0.18.0",
+    "core-js": "2",
+    "css3transform": "^1.2.1",
+    "lrz": "^4.9.40",
     "vue": "^2.6.6"
   },
   "devDependencies": {
@@ -14,6 +39,10 @@
     "@vue/cli-service": "^3.5.1",
     "less": "^3.0.4",
     "less-loader": "^4.1.0",
-    "vue-template-compiler": "^2.5.21"
+    "vue-template-compiler": "^2.5.21",
+    "vuepress": "^0.14.10"
+  },
+  "resolutions": {
+    "webpack-dev-middleware": "3.6.0"
   }
 }

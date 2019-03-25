@@ -1,10 +1,6 @@
----
-title: 快速上手
----
 
-## 开始
 
-### 简介
+### 开始
 
 `vue-lnsoft-uploader`是针对移动端图片上传、剪裁、压缩功能开发的。
 
@@ -24,6 +20,13 @@ or
 
 ```
 npm install vue-lnsoft-uploader
+```
+
+### 使用
+
+```javascript
+import uploader from 'vue-lnsoft-uploader'
+Vue.use(uploader)
 ```
 
 ### 注意

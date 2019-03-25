@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import '../assets/svg'
+    import './svg'
     export default {
         name: "g-icon",
         props:['iconname']

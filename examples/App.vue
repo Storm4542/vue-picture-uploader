@@ -3,7 +3,7 @@
         <h3>图片压缩裁剪上传组件Demo</h3>
 
         <h4> 当剪裁图片 imageCut === false 可使用多文件上传</h4>
-        <g-uploader
+        <uploader
                 :action=URL
                 :imageCut="false"
                 name="file"
@@ -12,9 +12,9 @@
                 @addFile=addFile
                 :file-list.sync="fileList"
         >
-        </g-uploader>
+        </uploader>
         <h4> imageCut === true 多文件上传无效，因为一次只能裁剪一个图片</h4>
-        <g-uploader
+        <uploader
                 :action=URL
                 :imageCut="true"
                 name="file"
@@ -23,18 +23,13 @@
                 @addFile=addFile2
                 :file-list.sync="fileList2"
         >
-        </g-uploader>
+        </uploader>
     </div>
 </template>
 
 <script>
-    import GUploader from './components/uploader';
-
     export default {
         name: 'app',
-        components: {
-            GUploader
-        },
         data() {
             return {
                 fileList: [],
