@@ -1,7 +1,7 @@
 module.exports = {
     title: 'Vue-lnsoft-uploader',
     description: '前端图片上传组件',
-    base:'/vue-lnsoft-uploader/',
+    base: '/vue-picture-uploader/',
     themeConfig: {
         base: '/',
         sidebar: [
