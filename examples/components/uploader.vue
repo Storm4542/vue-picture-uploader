@@ -83,6 +83,10 @@
             width: {
                 type: [Number, String],
                 default: 80
+            },
+            errorHandler: {
+                type: Function,
+                default: () => {}
             }
         },
         methods: {
@@ -246,7 +250,7 @@
                 if (isFormData) {
                     axios.request({
                         url: this.action,
-                        method: 'post',
+                        method: this.method,
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         },
@@ -254,21 +258,21 @@
                     }).then(r => {
                         console.log(r);
                         let url = this.parseResponse(r); // 使用用户提供的方法，处理成功时的响应,获取预览图(服务器一般返回该图片在服务器上的ID,用户的方法用来 拼接为 地址,)
-                        this.afterUploadFiles(url, newName); //
+                        this.afterUploadFiles(url, newName);
                     }).catch(() => {
                         this.uploadError(newName);
                     });
                 } else {
                     axios.request({
                         url: this.action,
-                        method: 'post',
+                        method: this.method,
                         data: data
                     }).then(r => {
                         console.log(r);
                         let url = this.parseResponse(r); // 使用用户提供的方法，处理成功时的响应,获取预览图(服务器一般返回该图片在服务器上的ID,用户的方法用来 拼接为 地址,)
                         this.afterUploadFiles(url, newName); //
-                    }).catch(() => {
-                        this.uploadError(newName);
+                    }).catch((e) => {
+                        this.uploadError(newName, e);
                     });
                 }
 
@@ -281,6 +285,7 @@
                 let index = fileList.indexOf(errorFile);
                 fileList.splice(index, 1, errorFileCopy);
                 this.$emit('update:fileList', fileList);
+                this.errorHandler(e);
             },
             onRemoveFile(file) { //移除文件
                 let copy = JSON.parse(JSON.stringify(this.fileList));

@@ -8,7 +8,9 @@
                 :imageCut="false"
                 name="file"
                 method="POST"
+                :blob="true"
                 :parseResponse="parseResponse"
+                :errorHandler="errorHandler"
                 @addFile=addFile
                 :file-list.sync="fileList"
         >
@@ -34,15 +36,18 @@
             return {
                 fileList: [],
                 fileList2: [],
-                URL: "http://127.0.0.1:3000/upload",
-                // URL: 'https://image-server-gulu.herokuapp.com/upload',
+                // URL: "http://127.0.0.1:3000/upload",
+                URL: 'https://image-server-gulu.herokuapp.com/upload',
             };
         },
         methods: {
             parseResponse(response) {
                 // let object = JSON.parse(response);
                 //返回url
-                return response.data;
+                return `${this.URL}/${response.data.key}`;
+            },
+            errorHandler(error) {
+                console.log(error);
             },
             addFile(file) {
                 this.fileList.push(file);
