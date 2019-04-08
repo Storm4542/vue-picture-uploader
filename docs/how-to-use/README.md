@@ -64,4 +64,5 @@ title: 使用
 | addFile       | 更新文件列表函数(按照示例写在项目中即可)                  | -      | 是       | Function         |
 | height        | 图片和添加图片按钮的高度                                  | 80     | 否       | String\|\|Number |
 | width         | 图片和添加图片按钮的宽度                                  | 80     | 否       | String\|\|Number |
+| blob          | 默认为base64上传，blob=true 以blob对象上传                | False  | 否       | Boolean          |
 
