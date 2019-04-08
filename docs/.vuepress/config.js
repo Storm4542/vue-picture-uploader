@@ -4,6 +4,10 @@ module.exports = {
     base: '/vue-picture-uploader/',
     themeConfig: {
         base: '/',
+        nav: [
+            { text: 'Home', link: '/' },
+            { text: 'GITHUB', link: 'https://github.com/Storm4542/vue-picture-uploader' },
+        ],
         sidebar: [
             {
                 title: '快速上手',

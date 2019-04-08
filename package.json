@@ -1,6 +1,6 @@
 {
   "name": "vue-picture-uploader",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "private": false,
   "main": "lib/vue-picture-uploader.umd.min.js",
   "repository": {

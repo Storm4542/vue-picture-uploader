@@ -6,15 +6,18 @@
                     <template v-if="file.status === 'uploading'">
                         <g-icon class="spin icon-loading" iconname="loading2"></g-icon>
                     </template>
-                    <template v-else-if="file.url.indexOf('image') >= 0">
+                    <template v-else-if="file.url.indexOf('http') >= 0">
                         <img class="addFile" :src="file.url" :style="{width:width+'px',height: height+'px'}"
                              alt="">
                         <div class="remove-wrapper">
-                            <g-icon class="remove-icon" @click="onRemoveFile(file)" iconname="close"></g-icon>
+                            <g-icon class="remove-icon" @click="onRemoveFile(file)" iconname="delete"></g-icon>
                         </div>
                     </template>
                     <template v-else>
                         <div class="defaultImage"></div>
+                        <div class="remove-wrapper">
+                            <g-icon class="remove-icon" @click="onRemoveFile(file)" iconname="delete"></g-icon>
+                        </div>
                     </template>
                 </div>
                 <!--<span class="file-name" :class="{[file.status]:file.status}">{{file.name}}</span>-->
@@ -29,7 +32,7 @@
             </li>
         </ol>
 
-
+        <img :src="blob" alt="">
         <div ref="temp" style="width: 0; height: 0; overflow: hidden;"></div>
     </div>
 </template>
@@ -48,6 +51,10 @@
             imageCut: {
                 type: Boolean,
                 default: true,
+            },
+            blob: {
+                type: Boolean,
+                default: false
             },
             action: {
                 type: String,
@@ -69,13 +76,13 @@
                 type: Array,
                 default: () => []
             },
-            height:{
-                type:[Number,String],
-                default:80
+            height: {
+                type: [Number, String],
+                default: 80
             },
-            width:{
-                type:[Number,String],
-                default:80
+            width: {
+                type: [Number, String],
+                default: 80
             }
         },
         methods: {
@@ -106,7 +113,8 @@
                 this.$refs.temp.appendChild(input);
                 return input;
             },
-            beforeUploadFile(rawFile, newName) { //上传之前
+            beforeUploadFile(rawFile, newName) {
+                //上传之前
                 //用于生成菊花
                 let {size, type} = rawFile;
                 this.$emit('addFile', {name: newName, size, type, status: 'uploading'});
@@ -145,7 +153,6 @@
                 });
             },
             uploadFiles(cutFile, rawFile) { //上传函数
-                console.log(rawFile);
                 if (!this.imageCut) {
                     Array.from(rawFile).map(file => {
                         let {name} = file; //找到 上传文件名
@@ -155,13 +162,20 @@
                             width: 800,
                             quality: 0.5,
                         }).then(res => {
-                            console.log(res);
-                            let base64File = {
-                                filename: newName,
-                                file: res.base64,
-                                time: new Date()
-                            };
-                            this.ajax(base64File, newName);
+                            if (this.blob) {
+                                let formData = new FormData(); //创建表单
+                                formData.append(this.name, res.file, newName); // formData 的 append 方法 https://developer.mozilla.org/zh-CN/docs/Web/API/FormData/append
+                                console.log('lrz formdata', formData.getAll(this.name));
+                                this.ajax(formData, newName, true);
+                            } else {
+                                let file = {
+                                    filename: newName,
+                                    file: res.base64,
+                                    time: new Date()
+                                };
+                                this.ajax(file, newName, false);
+                            }
+
                         });
 
                     });
@@ -169,24 +183,19 @@
                     let {name} = rawFile; //找到 上传文件名
                     let newName = this.generateName(name); //生成新的名字（因为可能会有重复）
                     this.beforeUploadFile(rawFile, newName); //生成菊花图
-                    let base64File = {
-                        filename: newName,
-                        file: cutFile,
-                        time: new Date()
-                    };
-                    // let formData = new FormData(); //创建表单
-                    // rawFile.base64 = cutFile;
-                    // formData.append(this.name, rawFile); // formData 的 append 方法 https://developer.mozilla.org/zh-CN/docs/Web/API/FormData/append
-                    // console.log(formData);
-                    // this.ajax(base64File, (response) => { //提交表单
-                    //     console.log('responese', response);
-                    //     let url = this.parseResponse(response); // 使用用户提供的方法，处理成功时的响应,获取预览图(服务器一般返回该图片在服务器上的ID,用户的方法用来 拼接为 地址,)
-                    //     this.afterUploadFiles(url, newName); //
-                    // }, (xhr) => {
-                    //     console.log('xhr', xhr);
-                    //     this.uploadError(newName); //处理失败响应
-                    // });
-                    this.ajax(base64File, newName);
+                    if (this.blob) {
+                        let formData = new FormData(); //创建表单
+                        formData.append(this.name, this.convertBase64ToBlob(cutFile), newName); // formData 的 append 方法 https://developer.mozilla.org/zh-CN/docs/Web/API/FormData/append
+                        this.ajax(formData, newName, true);
+                    } else {
+                        let file = {
+                            filename: newName,
+                            file: cutFile,
+                            time: new Date()
+                        };
+                        this.ajax(file, newName, false);
+                    }
+
                 }
             },
             afterUploadFiles(url, newName) {
@@ -198,9 +207,30 @@
                 copyFile.status = 'success'; //更改状态为 success (去掉菊花)
                 let fileListCopy = [...this.fileList]; //展开运算符浅拷贝 fileList
                 fileListCopy.splice(index, 1, copyFile); // 把更新新状态后的文件 添加到 fileList
-                console.log('fileListCopy');
-                console.log(fileListCopy);
                 this.$emit('update:fileList', fileListCopy); //提交给父组件
+            },
+            convertBase64ToBlob(base64) {
+                let base64Arr = base64.split(',');
+                let imgtype = '';
+                let base64String = '';
+                if (base64Arr.length > 1) {
+                    //如果是图片base64，去掉头信息
+                    base64String = base64Arr[1];
+                    imgtype = base64Arr[0].substring(base64Arr[0].indexOf(':') + 1, base64Arr[0].indexOf(';'));
+                }
+                // 将base64解码
+                let bytes = atob(base64String);
+                //var bytes = base64;
+                let bytesCode = new ArrayBuffer(bytes.length);
+                // 转换为类型化数组
+                let byteArray = new Uint8Array(bytesCode);
+
+                // 将base64转换为ascii码
+                for (let i = 0; i < bytes.length; i++) {
+                    byteArray[i] = bytes.charCodeAt(i);
+                }
+                // 生成Blob对象（文件对象）
+                return new Blob([bytesCode], {type: imgtype});
             },
             generateName(name) {
                 //有重复name的时候处理一下
@@ -212,15 +242,36 @@
                 }
                 return name;
             },
-            ajax(formData, newName) {
-                axios.post(this.action, {
-                    ...formData
-                }).then(r => {
-                    let url = this.parseResponse(r.data.file); // 使用用户提供的方法，处理成功时的响应,获取预览图(服务器一般返回该图片在服务器上的ID,用户的方法用来 拼接为 地址,)
-                    this.afterUploadFiles(url, newName); //
-                }).catch(() => {
-                    this.uploadError(newName);
-                });
+            ajax(data, newName, isFormData) {
+                if (isFormData) {
+                    axios.request({
+                        url: this.action,
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        },
+                        data: data
+                    }).then(r => {
+                        console.log(r);
+                        let url = this.parseResponse(r); // 使用用户提供的方法，处理成功时的响应,获取预览图(服务器一般返回该图片在服务器上的ID,用户的方法用来 拼接为 地址,)
+                        this.afterUploadFiles(url, newName); //
+                    }).catch(() => {
+                        this.uploadError(newName);
+                    });
+                } else {
+                    axios.request({
+                        url: this.action,
+                        method: 'post',
+                        data: data
+                    }).then(r => {
+                        console.log(r);
+                        let url = this.parseResponse(r); // 使用用户提供的方法，处理成功时的响应,获取预览图(服务器一般返回该图片在服务器上的ID,用户的方法用来 拼接为 地址,)
+                        this.afterUploadFiles(url, newName); //
+                    }).catch(() => {
+                        this.uploadError(newName);
+                    });
+                }
+
             },
             uploadError(newName) { //失败状态
                 let errorFile = this.fileList.filter(f => f.name === newName)[0];
@@ -240,7 +291,6 @@
                 });
                 this.$emit('update:fileList', copy);
             }
-
         }
     };
 </script>
@@ -267,6 +317,7 @@
             border: 1px solid #ddd;
             position: relative;
             margin: 8px 4px;
+
             .row {
                 width: 60%;
                 height: 0;
@@ -275,6 +326,7 @@
                 top: 50%;
                 left: 20%;
             }
+
             .col {
                 width: 0;
                 height: 60%;
@@ -284,12 +336,14 @@
                 top: 20%;
             }
         }
+
         .fileList {
             list-style: none;
             padding: 0;
             display: flex;
             flex-wrap: wrap;
             margin-left: 12px;
+
             .image-wrapper {
                 height: 80px;
                 width: 80px;
@@ -297,10 +351,12 @@
                 align-items: center;
                 justify-content: center;
                 position: relative;
+
                 .icon-loading {
                     height: 50%;
                     width: 50%;
                 }
+
                 .remove-wrapper {
                     width: 100%;
                     height: 100%;
@@ -311,26 +367,32 @@
                     justify-content: flex-end;
                 }
             }
+
             li {
                 display: flex;
                 align-items: center;
                 margin: 8px 4px;
                 /*padding: 5px;*/
+
                 .defaultImage {
                     height: 80px;
                     width: 80px;
                     background-color: #ddd;
                 }
             }
+
             .file-name {
                 margin-right: auto;
             }
+
             .success {
                 color: green;
             }
+
             .fail {
                 color: red;
             }
+
             .upload {
                 color: #ddd;
             }

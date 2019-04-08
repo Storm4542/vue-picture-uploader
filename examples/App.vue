@@ -1,8 +1,8 @@
 <template>
     <div style="margin-top: 20px">
         <h3>图片压缩裁剪上传组件Demo</h3>
-
-        <h4> 当剪裁图片 imageCut === false 可使用多文件上传</h4>
+        {{fileList}}
+        <h4> 当剪裁图片 imageCut === false 可使用多文件上传,blob = true</h4>
         <uploader
                 :action=URL
                 :imageCut="false"
@@ -34,14 +34,15 @@
             return {
                 fileList: [],
                 fileList2: [],
-                // URL: "http://127.0.0.1:3000/upload",
-                URL: 'https://image-server-gulu.herokuapp.com/upload',
+                URL: "http://127.0.0.1:3000/upload",
+                // URL: 'https://image-server-gulu.herokuapp.com/upload',
             };
         },
         methods: {
             parseResponse(response) {
                 // let object = JSON.parse(response);
-                return response;
+                //返回url
+                return response.data;
             },
             addFile(file) {
                 this.fileList.push(file);
