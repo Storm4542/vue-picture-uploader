@@ -24,7 +24,7 @@
             </li>
             <li>
                 <div @click="onClickUpload">
-                    <div class="addFile" :style="{width:width+'px',height: height+'px'}">
+                    <div class="addFile" :style="{width,height}">
                         <div class="row"></div>
                         <div class="col"></div>
                     </div>
@@ -77,12 +77,12 @@
                 default: () => []
             },
             height: {
-                type: [Number, String],
-                default: 80
+                type: String,
+                default: '80px'
             },
             width: {
-                type: [Number, String],
-                default: 80
+                type: String,
+                default: '80px'
             }
         },
         methods: {
