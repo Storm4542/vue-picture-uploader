@@ -295,7 +295,7 @@
     };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 
     @keyframes spin {
         0% {
